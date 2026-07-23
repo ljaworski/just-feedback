@@ -1,0 +1,59 @@
+{
+  "name": "@codelionapps/server",
+  "version": "0.1.0",
+  "description": "just-feedback backend: REST API + web panel + SQLite, one Node process",
+  "license": "MIT",
+  "keywords": [
+    "feedback",
+    "self-hosted",
+    "fastify",
+    "sqlite",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ljaworski/just-feedback.git",
+    "directory": "packages/server"
+  },
+  "homepage": "https://github.com/ljaworski/just-feedback#readme",
+  "bugs": {
+    "url": "https://github.com/ljaworski/just-feedback/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "just-feedback": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm --prefix ../.. run build -w @codelionapps/panel && npm run build:compiled",
+    "build:compiled": "npm run clean && tsc && node ../../scripts/copy-server-assets.mjs",
+    "prepack": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "dev": "npm run clean && tsc && node dist/cli.js start",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^10.1.0",
+    "@fastify/rate-limit": "^10.2.2",
+    "@fastify/static": "^10.1.2",
+    "better-sqlite3": "^12.2.0",
+    "fastify": "^5.2.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.13.1",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.10"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

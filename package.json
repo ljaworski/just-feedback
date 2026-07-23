@@ -1,0 +1,28 @@
+{
+  "name": "just-feedback",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted feedback collection for mobile apps",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "clean": "npm run clean --workspaces --if-present",
+    "build": "npm run build -w @codelionapps/server && npm run build -w @codelionapps/react-native",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test -w @codelionapps/server && npm run test -w @codelionapps/panel && npm run test -w @codelionapps/react-native",
+    "dev": "npm run dev -w @codelionapps/server",
+    "verify:packages": "node scripts/verify-packages.mjs",
+    "smoke:packages": "node scripts/smoke-packages.mjs",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "npm run clean && npm run typecheck && npm test && npm run build && npm run verify:packages && changeset publish"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.1"
+  }
+}

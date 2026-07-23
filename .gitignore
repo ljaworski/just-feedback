@@ -1,0 +1,11 @@
+node_modules/
+dist/
+lib/
+.env
+*.db
+*.db-shm
+*.db-wal
+.session-secret
+.DS_Store
+*.log
+.package-smoke-*/

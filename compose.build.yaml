@@ -1,0 +1,5 @@
+services:
+  just-feedback:
+    build:
+      context: .
+    image: just-feedback:local

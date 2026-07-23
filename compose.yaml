@@ -1,0 +1,23 @@
+services:
+  just-feedback:
+    image: ghcr.io/ljaworski/just-feedback:${JF_IMAGE_TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "${JF_PUBLISHED_PORT:-4180}:4180"
+    environment:
+      JF_TRUST_PROXY: "${JF_TRUST_PROXY:-false}"
+    volumes:
+      - just-feedback-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:'+(process.env.JF_PORT||4180)+'/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+volumes:
+  just-feedback-data:
