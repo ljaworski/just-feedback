@@ -1,27 +1,29 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { dictionaries, en, type Locale } from './strings';
+import {
+  dictionaries,
+  en,
+  isLocale,
+  localeFromBrowserLanguage,
+  localeMetadata,
+  type Locale,
+} from './config';
+import type { TranslationKey } from './locales/en';
 
 const STORAGE_KEY = 'jf_locale';
-const INTL_LOCALE: Record<Locale, string> = { pl: 'pl-PL', en: 'en-US' };
 
-function isLocale(v: unknown): v is Locale {
-  return v === 'pl' || v === 'en';
-}
-
-/** Stored valid value wins; otherwise `pl` iff the first browser preference starts with `pl`, else `en`. */
+/** Stored valid value wins; otherwise resolve the first browser preference, falling back to English. */
 export function resolveInitialLocale(
   stored: string | null,
   browserLangs: readonly string[],
 ): Locale {
   if (isLocale(stored)) return stored;
-  const first = browserLangs[0] ?? '';
-  return first.toLowerCase().startsWith('pl') ? 'pl' : 'en';
+  return localeFromBrowserLanguage(browserLangs[0] ?? '');
 }
 
 interface I18nValue {
   locale: Locale;
   setLocale: (l: Locale) => void;
-  t: (key: string, params?: Record<string, string | number>) => string;
+  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
   formatRelative: (iso: string) => string;
 }
 
@@ -34,7 +36,7 @@ function interpolate(s: string, params?: Record<string, string | number>): strin
 
 /** Relative time for recent dates, absolute (e.g. "12 Mar 2026") for older ones. */
 function formatRelative(iso: string, locale: Locale): string {
-  const intl = INTL_LOCALE[locale];
+  const intl = localeMetadata[locale].intlLocale;
   const then = new Date(iso).getTime();
   const diffSec = Math.round((then - Date.now()) / 1000); // negative = past
   const abs = Math.abs(diffSec);
@@ -54,7 +56,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    document.documentElement.lang = locale;
+    document.documentElement.lang = localeMetadata[locale].htmlLang;
   }, [locale]);
 
   const setLocale = useCallback((l: Locale) => {
@@ -67,7 +69,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (key: string, params?: Record<string, string | number>) => {
+    (key: TranslationKey, params?: Record<string, string | number>) => {
       const dict = dictionaries[locale];
       const value = dict[key] ?? en[key] ?? key; // safe fallback to English, then the key
       return interpolate(value, params);
