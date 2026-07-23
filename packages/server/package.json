@@ -34,7 +34,7 @@
     "build:compiled": "npm run clean && tsc && node ../../scripts/copy-server-assets.mjs",
     "prepack": "npm run build",
     "typecheck": "tsc --noEmit",
-    "dev": "npm run clean && tsc && node dist/cli.js start",
+    "dev": "npm run clean && tsc && node -e \"require('fs').cpSync('src/db/migrations','dist/db/migrations',{recursive:true})\" && node dist/cli.js start",
     "test": "vitest run",
     "test:watch": "vitest"
   },
