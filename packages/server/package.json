@@ -1,6 +1,6 @@
 {
   "name": "@codelionapps/server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "just-feedback backend: REST API + web panel + SQLite, one Node process",
   "license": "MIT",
   "keywords": [
