@@ -36,8 +36,8 @@ function recursiveFiles(directory, base = directory) {
 }
 
 try {
-  const firstSdk = packWorkspace(root, temporaryDirectory, '@codelionapps/react-native');
-  const firstServer = packWorkspace(root, temporaryDirectory, '@codelionapps/server');
+  const firstSdk = packWorkspace(root, temporaryDirectory, '@codelionapps/just-feedback-react-native');
+  const firstServer = packWorkspace(root, temporaryDirectory, '@codelionapps/just-feedback-server');
   const firstSdkPaths = filePaths(firstSdk);
   const firstServerPaths = filePaths(firstServer);
 
@@ -52,12 +52,12 @@ try {
       'lib/typescript/commonjs/index.d.ts',
       'lib/typescript/module/index.d.ts',
     ],
-    '@codelionapps/react-native',
+    '@codelionapps/just-feedback-react-native',
   );
   assertExcludes(
     firstSdkPaths,
     [/\.test\./, /(^|\/)src\//, /\.db(?:-|$|\.)/, /\.session-secret$/],
-    '@codelionapps/react-native',
+    '@codelionapps/just-feedback-react-native',
   );
 
   assertIncludes(
@@ -70,12 +70,12 @@ try {
       'dist/panel/index.html',
       'dist/db/migrations/001_init.sql',
     ],
-    '@codelionapps/server',
+    '@codelionapps/just-feedback-server',
   );
   assertExcludes(
     firstServerPaths,
     [/\.test\./, /(^|\/)src\//, /\.db(?:-|$|\.)/, /\.session-secret$/],
-    '@codelionapps/server',
+    '@codelionapps/just-feedback-server',
   );
 
   const panelFiles = recursiveFiles(resolve(root, 'packages/panel/dist'))
@@ -86,8 +86,8 @@ try {
     throw new Error('The server package does not contain exactly the current panel build.');
   }
 
-  const secondSdk = packWorkspace(root, temporaryDirectory, '@codelionapps/react-native');
-  const secondServer = packWorkspace(root, temporaryDirectory, '@codelionapps/server');
+  const secondSdk = packWorkspace(root, temporaryDirectory, '@codelionapps/just-feedback-react-native');
+  const secondServer = packWorkspace(root, temporaryDirectory, '@codelionapps/just-feedback-server');
   if (JSON.stringify(firstSdkPaths) !== JSON.stringify(filePaths(secondSdk))) {
     throw new Error('SDK package contents are not deterministic across clean builds.');
   }
@@ -96,8 +96,8 @@ try {
   }
 
   console.log(
-    `Verified @codelionapps/react-native (${firstSdk.metadata.entryCount} files) and ` +
-      `@codelionapps/server (${firstServer.metadata.entryCount} files).`,
+    `Verified @codelionapps/just-feedback-react-native (${firstSdk.metadata.entryCount} files) and ` +
+      `@codelionapps/just-feedback-server (${firstServer.metadata.entryCount} files).`,
   );
 } finally {
   rmSync(temporaryDirectory, { recursive: true, force: true });

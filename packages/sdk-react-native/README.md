@@ -1,4 +1,4 @@
-# @codelionapps/react-native
+# @codelionapps/just-feedback-react-native
 
 Drop-in feedback collection for React Native and Expo apps, backed by a self-hosted
 [just-feedback](https://github.com/ljaworski/just-feedback) server. The SDK is written entirely in
@@ -7,9 +7,9 @@ TypeScript and JavaScript, requires no native linking, and works in Expo Go.
 ## Install
 
 ```sh
-npm install @codelionapps/react-native
+npm install @codelionapps/just-feedback-react-native
 # or
-yarn add @codelionapps/react-native
+yarn add @codelionapps/just-feedback-react-native
 ```
 
 React 18 or newer and React Native 0.72 or newer are required.
@@ -17,7 +17,7 @@ React 18 or newer and React Native 0.72 or newer are required.
 ## Quick start
 
 ```tsx
-import { FeedbackProvider, useFeedback } from '@codelionapps/react-native';
+import { FeedbackProvider, useFeedback } from '@codelionapps/just-feedback-react-native';
 
 export default function Root() {
   return (

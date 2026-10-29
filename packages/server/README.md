@@ -1,4 +1,4 @@
-# @codelionapps/server
+# @codelionapps/just-feedback-server
 
 Self-hosted feedback backend containing the REST API, administrative web panel, SQLite database,
 and migrations in one Node.js process.
@@ -8,14 +8,14 @@ and migrations in one Node.js process.
 Node.js 20 or newer is required.
 
 ```sh
-npx @codelionapps/server start
+npx @codelionapps/just-feedback-server start
 ```
 
 The service listens on `http://localhost:4180`, creates `./just-feedback.db`, applies migrations,
 and prints a one-time onboarding link. To keep data in a known location:
 
 ```sh
-npx @codelionapps/server start --db /var/lib/just-feedback/feedback.db --port 4180
+npx @codelionapps/just-feedback-server start --db /var/lib/just-feedback/feedback.db --port 4180
 ```
 
 For long-running production installations, the published Docker image is recommended:

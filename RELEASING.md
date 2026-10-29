@@ -1,7 +1,7 @@
 # Releasing just-feedback
 
 Public packages are independently versioned with Changesets. The server Docker image always uses
-the version of `@codelionapps/server`.
+the version of `@codelionapps/just-feedback-server`.
 
 ## One-time bootstrap
 

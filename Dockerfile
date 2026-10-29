@@ -16,7 +16,7 @@ RUN npm ci
 COPY scripts scripts
 COPY packages/panel packages/panel
 COPY packages/server packages/server
-RUN npm run build -w @codelionapps/server
+RUN npm run build -w @codelionapps/just-feedback-server
 
 FROM node:20-slim AS runtime
 WORKDIR /app
@@ -31,7 +31,7 @@ COPY packages/sdk-react-native/package.json packages/sdk-react-native/
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends python3 make g++ \
- && npm ci --omit=dev --workspace @codelionapps/server --include-workspace-root=false \
+ && npm ci --omit=dev --workspace @codelionapps/just-feedback-server --include-workspace-root=false \
  && apt-get purge -y python3 make g++ \
  && apt-get autoremove -y \
  && rm -rf /var/lib/apt/lists/* \

@@ -38,7 +38,7 @@ Priorytety projektowe: **prostota hostowania** (jedna komenda, zero zewnętrznyc
 Kluczowe decyzje architektoniczne:
 
 1. **Monorepo (npm workspaces)** — trzy paczki: `packages/server`, `packages/sdk-react-native`, `packages/panel`. Panel jest budowany do statycznych plików i dołączany do paczki serwera przy publikacji (build panelu kopiowany do `packages/server/dist/panel`).
-2. **Jeden proces = całość backendu** — API + panel + baza w jednym procesie. Brak Redisa, brak kolejek, brak osobnego serwera bazy. Deploy = `npx @codelionapps/server start` na dowolnym VPS-ie.
+2. **Jeden proces = całość backendu** — API + panel + baza w jednym procesie. Brak Redisa, brak kolejek, brak osobnego serwera bazy. Deploy = `npx @codelionapps/just-feedback-server start` na dowolnym VPS-ie.
 3. **SQLite przez `better-sqlite3`** — plikowa baza, zero konfiguracji, WAL mode. Ścieżka konfigurowalna przez env.
 4. **Dwa odrębne obszary API**: `/api/v1/*` (klienci z kluczem API — tylko wysyłanie feedbacku) oraz `/api/admin/*` (panel — sesja cookie po zalogowaniu hasłem admina).
 5. **Klucze API przechowywane jako hash SHA-256** — pełny klucz pokazywany tylko raz przy utworzeniu.
@@ -62,7 +62,7 @@ Kluczowe decyzje architektoniczne:
 | Testy | `vitest` (server: endpointy przez `fastify.inject`; panel: logika i komponenty i18n; SDK: logika klienta) | Lekki, szybki |
 | CLI serwera | `commander` lub ręczny parsing `process.argv` (wystarczy `start`) | Minimalizm |
 
-Nazwy paczek npm: `@codelionapps/server`, `@codelionapps/react-native`. Panel nie jest publikowany osobno.
+Nazwy paczek npm: `@codelionapps/just-feedback-server`, `@codelionapps/just-feedback-react-native`. Panel nie jest publikowany osobno.
 
 ---
 
@@ -143,7 +143,7 @@ Reguły danych administratora:
 | `JF_TRUST_PROXY` | ❌ | `false` | Ustawić `true` za reverse proxy (poprawne IP do rate limitu). |
 | `JF_ADMIN_PORT` | ❌ | — | Gdy ustawiony: panel + `/api/admin/*` przenoszą się na osobny port (druga instancja Fastify na tej samej bazie), a port główny serwuje **wyłącznie** `/api/v1/*`. Pozwala wystawić publicznie tylko endpoint kliencki, a admina trzymać za firewallem/VPN. Gdy brak — wszystko na jednym porcie (domyślny, najprostszy tryb). |
 
-Uruchamianie: `npx @codelionapps/server start` (bin `just-feedback` w package.json). CLI wspiera też flagi `--port`, `--db` nadpisujące env. Przy starcie logować: port, ścieżkę bazy, liczbę zastosowanych migracji.
+Uruchamianie: `npx @codelionapps/just-feedback-server start` (bin `just-feedback` w package.json). CLI wspiera też flagi `--port`, `--db` nadpisujące env. Przy starcie logować: port, ścieżkę bazy, liczbę zastosowanych migracji.
 
 Pierwszy start nie wymaga `JF_ADMIN_PASSWORD`. Jeśli `admin_credentials` jest puste, serwer:
 1. Generuje kryptograficznie losowy token setupu (32 bajty, hex), przechowywany wyłącznie w pamięci procesu.
@@ -395,12 +395,12 @@ Sekcje od góry:
 
 ## 7. SDK React Native — specyfikacja
 
-Paczka: `@codelionapps/react-native`. `peerDependencies`: `react >= 18`, `react-native >= 0.72`. **Zero dependencies i zero natywnego kodu** — wyłącznie JS/TS (`fetch`, `Modal`, `Platform` z RN core). Dzięki temu działa w Expo Go, Expo dev build i bare RN bez instalacji podów.
+Paczka: `@codelionapps/just-feedback-react-native`. `peerDependencies`: `react >= 18`, `react-native >= 0.72`. **Zero dependencies i zero natywnego kodu** — wyłącznie JS/TS (`fetch`, `Modal`, `Platform` z RN core). Dzięki temu działa w Expo Go, Expo dev build i bare RN bez instalacji podów.
 
 ### 7.1 Publiczne API
 
 ```tsx
-import { FeedbackProvider, FeedbackModal, useFeedback, sendFeedback } from '@codelionapps/react-native';
+import { FeedbackProvider, FeedbackModal, useFeedback, sendFeedback } from '@codelionapps/just-feedback-react-native';
 
 // 1. Provider u korzenia aplikacji — konfiguracja
 <FeedbackProvider
@@ -472,7 +472,7 @@ just-feedback/
 ├── README.md                     # quickstart: deploy serwera + integracja SDK
 ├── Dockerfile                    # opcjonalny deploy serwera
 └── packages/
-    ├── server/                   # @codelionapps/server
+    ├── server/                   # @codelionapps/just-feedback-server
     │   ├── package.json          # bin: { "just-feedback": "dist/cli.js" }, files: ["dist"]
     │   └── src/
     │       ├── cli.ts            # parsowanie argv → start()
@@ -490,19 +490,19 @@ just-feedback/
     │       └── test/             # vitest, testy przez app.inject()
     ├── panel/                    # prywatna paczka (React+Vite); build → ../server/dist/panel
     │   └── src/ (main.tsx, api.ts, strings.ts, app.css, views/, components/)
-    └── sdk-react-native/         # @codelionapps/react-native
+    └── sdk-react-native/         # @codelionapps/just-feedback-react-native
         └── src/ (index.ts, FeedbackProvider.tsx, FeedbackModal.tsx, useFeedback.ts, client.ts, types.ts)
 ```
 
-Kolejność builda: `panel` → `server` (skrypt kopiuje build panelu) → `sdk`. Publikacja: `@codelionapps/server` i `@codelionapps/react-native`.
+Kolejność builda: `panel` → `server` (skrypt kopiuje build panelu) → `sdk`. Publikacja: `@codelionapps/just-feedback-server` i `@codelionapps/just-feedback-react-native`.
 
-Quickstart w README zaczyna się od `npx @codelionapps/server start` bez wymaganych sekretów. Pokazuje odczytanie jednorazowego linku setupu z logów, wariant z opcjonalnym `JF_ADMIN_PASSWORD`, konieczność trwałego przechowywania pliku SQLite oraz informację, że po ukończeniu onboardingu późniejsze wartości `JF_ADMIN_PASSWORD` są ignorowane.
+Quickstart w README zaczyna się od `npx @codelionapps/just-feedback-server start` bez wymaganych sekretów. Pokazuje odczytanie jednorazowego linku setupu z logów, wariant z opcjonalnym `JF_ADMIN_PASSWORD`, konieczność trwałego przechowywania pliku SQLite oraz informację, że po ukończeniu onboardingu późniejsze wartości `JF_ADMIN_PASSWORD` są ignorowane.
 
 ---
 
 ## 9. Kryteria akceptacji MVP
 
-1. `npx @codelionapps/server start` bez `JF_ADMIN_PASSWORD` uruchamia instancję pod `http://localhost:4180`, tworzy/migruje bazę i loguje jednorazowy link setupu zamiast odmawiać startu.
+1. `npx @codelionapps/just-feedback-server start` bez `JF_ADMIN_PASSWORD` uruchamia instancję pod `http://localhost:4180`, tworzy/migruje bazę i loguje jednorazowy link setupu zamiast odmawiać startu.
 2. Link setupu otwiera onboarding; zły token daje `403`, a po restarcie działa wyłącznie nowy token. Endpoint setupu jest niedostępny po pierwszym udanym ukończeniu (`409`).
 3. Bez env onboarding wymaga hasła i potwierdzenia. Z `JF_ADMIN_PASSWORD` pomija krok hasła, zapisuje jego scrypt hash podczas ukończenia i nie zapisuje plaintextu. Późniejsza zmiana env nie zmienia hasła logowania.
 4. Onboarding pozwala atomowo utworzyć administratora, pierwszy projekt, pierwszy klucz i sesję. Pełny klucz jest widoczny raz wraz ze snippetem SDK, a wygenerowany klucz od razu autoryzuje `POST /api/v1/feedback`.

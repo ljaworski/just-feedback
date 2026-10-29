@@ -52,7 +52,7 @@ jobs:
   image:
     name: Publish server image
     needs: release
-    if: always() && (github.event_name == 'workflow_dispatch' || (needs.release.outputs.published == 'true' && contains(needs.release.outputs.published_packages, '@codelionapps/server')))
+    if: always() && (github.event_name == 'workflow_dispatch' || (needs.release.outputs.published == 'true' && contains(needs.release.outputs.published_packages, '@codelionapps/just-feedback-server')))
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
