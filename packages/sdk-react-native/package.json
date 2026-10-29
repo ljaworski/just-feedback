@@ -1,5 +1,5 @@
 {
-  "name": "@codelionapps/react-native",
+  "name": "@codelionapps/just-feedback-react-native",
   "version": "0.1.0",
   "description": "React Native SDK for just-feedback: drop-in feedback modal, zero native code, Expo-compatible",
   "license": "MIT",

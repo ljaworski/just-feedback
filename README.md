@@ -2,14 +2,14 @@
 
 Self-hosted feedback collection for mobile apps. Everything runs in a single Node process: the REST API, web panel, and SQLite database. No Redis or external services required.
 
-- **Server** — `@codelionapps/server` (npm), which includes the client API, admin panel, and database.
+- **Server** — `@codelionapps/just-feedback-server` (npm), which includes the client API, admin panel, and database.
 - **Panel** — a React SPA bundled with the server, with Polish and English UI.
-- **SDK** — `@codelionapps/react-native` (npm), a ready-to-use feedback modal that requires no native code and works in Expo Go.
+- **SDK** — `@codelionapps/just-feedback-react-native` (npm), a ready-to-use feedback modal that requires no native code and works in Expo Go.
 
 ## Quickstart (server)
 
 ```bash
-npx @codelionapps/server start
+npx @codelionapps/just-feedback-server start
 ```
 
 No secrets or configuration are required to get started. On its first run, the server:
@@ -32,7 +32,7 @@ For a remote host, swap `localhost` for your host (or paste just the token into 
 You can skip choosing a password in the browser by setting one in advance (at least 8 characters):
 
 ```bash
-JF_ADMIN_PASSWORD='change-me-please' npx @codelionapps/server start
+JF_ADMIN_PASSWORD='change-me-please' npx @codelionapps/just-feedback-server start
 ```
 
 Once onboarding is complete, `JF_ADMIN_PASSWORD` is **ignored** on later starts. The password is stored as a hash in the database, so changing the environment variable does not change the login password.
@@ -144,7 +144,7 @@ Container health is reported by `GET /healthz` and by the built-in Docker health
 
 ```ini
 [Service]
-ExecStart=/usr/bin/npx @codelionapps/server start
+ExecStart=/usr/bin/npx @codelionapps/just-feedback-server start
 Environment=JF_DB_PATH=/var/lib/just-feedback/db.sqlite
 Restart=always
 ```
@@ -152,11 +152,11 @@ Restart=always
 ## SDK (React Native / Expo)
 
 ```bash
-npm install @codelionapps/react-native
+npm install @codelionapps/just-feedback-react-native
 ```
 
 ```tsx
-import { FeedbackProvider, useFeedback } from '@codelionapps/react-native';
+import { FeedbackProvider, useFeedback } from '@codelionapps/just-feedback-react-native';
 
 export default function Root() {
   return (
@@ -191,6 +191,6 @@ Public packages are independently versioned with Changesets. Maintainers should 
 Run the server against the panel dev server:
 
 ```bash
-npm run dev -w @codelionapps/server   # API on :4180
+npm run dev -w @codelionapps/just-feedback-server   # API on :4180
 npm run dev -w @codelionapps/panel    # Vite on :5173, proxies /api -> :4180
 ```

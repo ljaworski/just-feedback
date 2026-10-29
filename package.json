@@ -8,10 +8,10 @@
   ],
   "scripts": {
     "clean": "npm run clean --workspaces --if-present",
-    "build": "npm run build -w @codelionapps/server && npm run build -w @codelionapps/react-native",
+    "build": "npm run build -w @codelionapps/just-feedback-server && npm run build -w @codelionapps/just-feedback-react-native",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "npm run test -w @codelionapps/server && npm run test -w @codelionapps/panel && npm run test -w @codelionapps/react-native",
-    "dev": "npm run dev -w @codelionapps/server",
+    "test": "npm run test -w @codelionapps/just-feedback-server && npm run test -w @codelionapps/panel && npm run test -w @codelionapps/just-feedback-react-native",
+    "dev": "npm run dev -w @codelionapps/just-feedback-server",
     "verify:packages": "node scripts/verify-packages.mjs",
     "smoke:packages": "node scripts/smoke-packages.mjs",
     "changeset": "changeset",

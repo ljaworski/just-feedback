@@ -1,5 +1,5 @@
 {
-  "name": "@codelionapps/server",
+  "name": "@codelionapps/just-feedback-server",
   "version": "0.1.1",
   "description": "just-feedback backend: REST API + web panel + SQLite, one Node process",
   "license": "MIT",

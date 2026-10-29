@@ -79,31 +79,31 @@ async function startServer(cli, cwd, port, dbPath) {
 try {
   const archives = resolve(temporaryDirectory, 'archives');
   mkdirSync(archives);
-  const sdkPack = packWorkspace(root, archives, '@codelionapps/react-native');
-  const serverPack = packWorkspace(root, archives, '@codelionapps/server');
+  const sdkPack = packWorkspace(root, archives, '@codelionapps/just-feedback-react-native');
+  const serverPack = packWorkspace(root, archives, '@codelionapps/just-feedback-server');
 
   const sdkDirectory = resolve(
     temporaryDirectory,
-    'sdk-consumer/node_modules/@codelionapps/react-native',
+    'sdk-consumer/node_modules/@codelionapps/just-feedback-react-native',
   );
   extract(sdkPack.archive, sdkDirectory);
   const sdkConsumer = resolve(temporaryDirectory, 'sdk-consumer');
   writeFileSync(resolve(sdkConsumer, 'package.json'), '{"type":"module"}\n');
   writeFileSync(
     resolve(sdkConsumer, 'smoke.mts'),
-    "import { FeedbackProvider, type FeedbackConfig } from '@codelionapps/react-native';\n" +
+    "import { FeedbackProvider, type FeedbackConfig } from '@codelionapps/just-feedback-react-native';\n" +
       "const config: FeedbackConfig = { url: 'https://example.com', apiKey: 'jf_public' };\n" +
       'void FeedbackProvider; void config;\n',
   );
   writeFileSync(
     resolve(sdkConsumer, 'smoke.cts'),
-    "import { FeedbackProvider, type FeedbackConfig } from '@codelionapps/react-native';\n" +
+    "import { FeedbackProvider, type FeedbackConfig } from '@codelionapps/just-feedback-react-native';\n" +
       "const config: FeedbackConfig = { url: 'https://example.com', apiKey: 'jf_public' };\n" +
       'void FeedbackProvider; void config;\n',
   );
   const resolvedRequire = run(
     process.execPath,
-    ['-e', "process.stdout.write(require.resolve('@codelionapps/react-native'))"],
+    ['-e', "process.stdout.write(require.resolve('@codelionapps/just-feedback-react-native'))"],
     { cwd: sdkConsumer },
   );
   if (!resolvedRequire.includes('/lib/commonjs/index.js')) {
@@ -111,7 +111,7 @@ try {
   }
   const resolvedImport = run(
     process.execPath,
-    ['--input-type=module', '-e', "process.stdout.write(import.meta.resolve('@codelionapps/react-native'))"],
+    ['--input-type=module', '-e', "process.stdout.write(import.meta.resolve('@codelionapps/just-feedback-react-native'))"],
     { cwd: sdkConsumer },
   );
   if (!resolvedImport.includes('/lib/module/index.js')) {
@@ -138,7 +138,7 @@ try {
     resolve(sdkConsumer, 'index.js'),
     "import React from 'react';\n" +
       "import { AppRegistry, View } from 'react-native';\n" +
-      "import { FeedbackProvider } from '@codelionapps/react-native';\n" +
+      "import { FeedbackProvider } from '@codelionapps/just-feedback-react-native';\n" +
       "const App = () => React.createElement(FeedbackProvider, { config: { url: 'https://example.com', apiKey: 'jf_public' } }, React.createElement(View));\n" +
       "AppRegistry.registerComponent('JustFeedbackSmoke', () => App);\n",
   );
@@ -177,7 +177,7 @@ try {
 
   const serverDirectory = resolve(
     temporaryDirectory,
-    'server-consumer/node_modules/@codelionapps/server',
+    'server-consumer/node_modules/@codelionapps/just-feedback-server',
   );
   extract(serverPack.archive, serverDirectory);
   const serverConsumer = resolve(temporaryDirectory, 'server-consumer');
